@@ -1,6 +1,7 @@
 import numpy as np
 
 from itertools import count
+from numpy.linalg import inv
 
 def get_2D_line(x1, y1, x2, y2):
     A = y2 - y1
@@ -24,7 +25,7 @@ def label_points(X, w):
     return np.sign(np.dot(X, w))
 
 def fit_linear_regression(X, y):
-    return np.linalg.inv(X.T.dot(X)).dot(X.T).dot(y)
+    return inv(X.T @ X) @ X.T @ y
 
 def fit_PLA(X, y, initial_weights=np.zeros(3)):
     w_hat = initial_weights    
