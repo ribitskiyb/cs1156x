@@ -24,6 +24,17 @@ def get_2D_points(n_points, interval):
 def label_points(X, w):
     return np.sign(np.dot(X, w))
 
+def get_2D_linearly_separated_datasets(interval, weights, train_size, test_size=None):
+	X_train = get_2D_points(train_size, interval)
+	y_train = label_points(X_train, weights)
+	
+	if test_size:	
+		X_test = get_2D_points(test_size, interval)
+		y_test = label_points(X_test, weights)
+		return X_train, y_train, X_test, y_test
+	else:
+		return X_train, y_train
+
 def fit_linear_regression(X, y):
     return inv(X.T @ X) @ X.T @ y
 
@@ -37,8 +48,7 @@ def fit_PLA(X, y, initial_weights=np.zeros(3)):
         w_hat += y[rand_misclf_idx] * X[rand_misclf_idx]        
     return w_hat, n_iter
 
-def calculate_accuracy(X, w_true, w_hat):
-    y_true = label_points(X, w_true)
+def calculate_accuracy(X, y_true, w_hat):
     y_pred = label_points(X, w_hat)
     total = X.shape[0]
     return np.sum(y_true == y_pred) / total
