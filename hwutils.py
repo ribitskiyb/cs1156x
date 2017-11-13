@@ -20,9 +20,9 @@ def get_2D_line_function(weights):
 
 
 def get_2D_points(n_points, interval):
-    return np.append(np.ones((n_points, 1)),
-                     np.random.uniform(*interval, (n_points, 2)),
-                     axis=1)
+    points = np.ones((n_points, 3))
+    points[:, 1:] = np.random.uniform(*interval, (n_points, 2))
+    return points
 
 
 def label_points(X, w):
@@ -68,3 +68,6 @@ def calculate_accuracy(X, y_true, w_hat):
     y_pred = label_points(X, w_hat)
     total = X.shape[0]
     return np.sum(y_true == y_pred) / total
+
+def calculate_clf_error(X, y_true, w_hat):
+	return 1 - calculate_accuracy(X, y_true, w_hat)
