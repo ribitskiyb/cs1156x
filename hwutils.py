@@ -1,7 +1,9 @@
 import numpy as np
+import matplotlib.pyplot as plt
 
 from itertools import count
 from numpy.linalg import inv
+from matplotlib.ticker import MultipleLocator
 
 
 def get_2D_line(x1, y1, x2, y2):
@@ -69,5 +71,35 @@ def calculate_accuracy(X, y_true, w_hat):
     total = X.shape[0]
     return np.sum(y_true == y_pred) / total
 
+
 def calculate_clf_error(X, y_true, w_hat):
 	return 1 - calculate_accuracy(X, y_true, w_hat)
+
+
+def plot_2D_points_and_lines(X, y, lines_params, INTERVAL=np.array([-1., 1.])):
+    @np.vectorize
+    def colorer(label_value):
+        return {-1: 'red', +1: 'green'}[label_value]
+    
+    plt.figure(figsize=(8,6))
+    ax = plt.gca()
+    
+    plt.xlim(*INTERVAL*1.1)
+    plt.ylim(*INTERVAL*1.1)
+    majloc, minloc = [MultipleLocator(mul) for mul in (1, .1)]
+    for axis in [ax.xaxis, ax.yaxis]:
+        axis.set_major_locator(majloc)
+        axis.set_minor_locator(minloc)
+    for pos in ['right', 'top']:   ax.spines[pos].set_color('none')
+    for pos in ['left', 'bottom']: ax.spines[pos].set_position('zero')
+    ax.set_aspect('equal')
+
+    # Lines
+    for params in lines_params:
+        f = get_2D_line_function(params['weights'])
+        plt.plot(INTERVAL*2, f(INTERVAL*2), linestyle=params['style'], color=params['color'])
+    
+    # Points
+    plt.scatter(*X[:, 1:].T, c=colorer(y))
+
+    plt.show()
