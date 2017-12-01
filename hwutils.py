@@ -42,6 +42,20 @@ def get_2D_linearly_separated_datasets(interval, weights, train_size, test_size=
     else:
         return X_train, y_train
 
+
+def get_2D_binary_labeled_datasets(interval, labeler, train_size, test_size=None):
+    labeler = np.vectorize(labeler)
+
+    X_train = get_2D_points(train_size, interval)
+    y_train = np.sign(labeler(*X_train[:, 1:].T))
+    
+    if test_size:
+        X_test = get_2D_points(test_size, interval)
+        y_test = np.sign(labeler(*X_test[:, 1:].T))
+        return X_train, y_train, X_test, y_test
+    else:
+        return X_train, y_train
+
     
 def fit_linear_regression(X, y, lambda_ = 0):
     n_objects, n_features = X.shape
